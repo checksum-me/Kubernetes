@@ -9,3 +9,6 @@ git config --global user.email "your_email@example.com"
 
 #git cheat sheet
 https://education.github.com/git-cheat-sheet-education.pdf
+
+
+git log --graph --oneline
