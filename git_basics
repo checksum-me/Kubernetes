@@ -45,3 +45,6 @@ This will fetch and merge the origin/master into the local master
 git branch -a -> shows all the branches , including the remote branch names
 
 -----------------------------------------
+for other public repos where we dont have access, we can fork the repo, work on our changes, commit to our master, then create a pull request to merge from our master to their master. If the PR is approved and merged our changes will be in the Open source project. Happy coding!
+
+-----------------------------------------
