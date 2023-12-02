@@ -12,3 +12,15 @@ https://education.github.com/git-cheat-sheet-education.pdf
 
 
 git log --graph --oneline
+
+-----------------------------------------
+So you can create a repo locally and when you are ready to push the same to hosting site like github or gitlab, etc. you can follow the below steps
+
+1. go to the folder via terminal where the repo resides
+2. git status and check the current status of the repo
+3. for our example lets consider gitlab, go to your online repo and get the URL ( http://git.example.com/username/my-repo.git)
+4. now in the terminal, use the below commands
+    git remote add origin <URL>
+    git push origin master (assuming your master repo is what you want to push to the remote REPO)
+5. if prompted for username and pass, provide your creds for the online hosting site
+6. Refresh the github and view that the Repo is now synced with the changes from your local
