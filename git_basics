@@ -36,3 +36,12 @@ git push origin (alias) master (branch)
 this command will push the changes made locally to the remote (origin) and specified branch (master)
 
 -----------------------------------------
+
+git pull origin master
+
+This is two commands in one i.e. "git fetch origin master" and "git merge origin/master"
+This will fetch and merge the origin/master into the local master
+
+git branch -a -> shows all the branches , including the remote branch names
+
+-----------------------------------------
