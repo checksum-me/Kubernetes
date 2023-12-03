@@ -60,3 +60,16 @@ git rebase -i HEAD~3
 this comamnd will ask what to do with the last three commits. I did pick the first one in the editor that opens and mentioned squash for the next two commits. Now all the 3 commits were merged into 1. 
 
 -----------------------------------------
+
+switch to the branch where you need the file 
+
+branch - master - filea has the latest changes
+branch - feature/game1 - filea is there but doesnt have the master filea changes
+
+now in this scenario we need the filea changes from master to feature/game1. 
+to do this cherry pick the changes using the below command
+
+git checkout feature/game1
+git cherry <commit-number-from-master>
+
+-----------------------------------------
