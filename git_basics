@@ -103,3 +103,17 @@ git reflog - shows the state of the repo i.e. changes in the repo
 got log - shows the state of the commits
 
 -----------------------------------------
+
+porcelian changes and plumbing changes, commands that superficially give info are procelian.
+
+commands that make hashes like create objects are plumbling changes. e.g. commit
+
+object, tree, hash - are three different types of objects.
+
+git is nothing by a key value store
+
+you can try other commands to create hash manually i.e. git hash-bject <filename>, this will give hash and after commit of this file, the file will be sitting in the first two letters folder of the hash.
+
+using git commands you can view the content of the hash by passing in -p flag
+
+-----------------------------------------
