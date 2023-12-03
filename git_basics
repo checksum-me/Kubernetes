@@ -73,3 +73,33 @@ git checkout feature/game1
 git cherry <commit-number-from-master>
 
 -----------------------------------------
+
+git revert <commit-id> or git revert Head~0
+
+this command can be used to revert the changes. either specify the commit id to revert or for the last commited changes use HEAD~0
+
+-----------------------------------------
+
+git reset --soft HEAD~1
+
+This will retain the file of that commit and then remove the commit
+
+if --hard is used, then the files of that commit also will be deleted
+
+-----------------------------------------
+
+git stash - to stash the current staging area files into the stash
+git stash list - to list the files stashed
+
+git stash pop - puts the stash back to the staging area
+
+git stash show stash@{1} - this shows the content in stash
+
+Note: stash works across branches
+
+-----------------------------------------
+
+git reflog - shows the state of the repo i.e. changes in the repo
+got log - shows the state of the commits
+
+-----------------------------------------
