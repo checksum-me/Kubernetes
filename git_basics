@@ -48,3 +48,15 @@ git branch -a -> shows all the branches , including the remote branch names
 for other public repos where we dont have access, we can fork the repo, work on our changes, commit to our master, then create a pull request to merge from our master to their master. If the PR is approved and merged our changes will be in the Open source project. Happy coding!
 
 -----------------------------------------
+
+git checkout master 
+
+This command helps to switch to master branch
+
+-----------------------------------------
+
+git rebase -i HEAD~3
+
+this comamnd will ask what to do with the last three commits. I did pick the first one in the editor that opens and mentioned squash for the next two commits. Now all the 3 commits were merged into 1. 
+
+-----------------------------------------
