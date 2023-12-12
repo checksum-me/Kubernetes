@@ -10,6 +10,16 @@ k api-resources
 //List all the api resources and grep a particular resource
 k api-resources | grep -i "replicaset"
 
+//Namespacing a resource - below is applicable for all the resource types
+//you can also add namespace while creating resources in the metadata section next to name
+//gets all the pods from default namespace
+k get pods 
+//gets all pods from all namespace
+k get pods -A
+//gets all pods from a specified namespace
+k get pods --namespace=kube-system
+
+
 //Create pod imperatively
 k run redis --image=redis
 k run nginx --image=nginx
@@ -42,3 +52,10 @@ k delete pod nginx
 
 //Scale a replicaset
 k scale -replicas=6 -f <yamlfilename>.yaml
+
+//when a service is created a dns entry is added automatically in the below format
+db-service.dev.svc.cluster.local
+//cluster.local - default domain name
+//svc - sub domain for the service
+//dev - namespace
+//db-service - service name itself
