@@ -10,12 +10,19 @@ k api-resources
 //List all the api resources and grep a particular resource
 k api-resources | grep -i "replicaset"
 
+//Create namespace
+k create namespace dev
+
+//Switch namespace permanently to some ns 
+k config set-context $(kubectl config current-context) --namespace=dev
+
 //Namespacing a resource - below is applicable for all the resource types
 //you can also add namespace while creating resources in the metadata section next to name
 //gets all the pods from default namespace
 k get pods 
 //gets all pods from all namespace
 k get pods -A
+k get pods --all-namespace
 //gets all pods from a specified namespace
 k get pods --namespace=kube-system
 
