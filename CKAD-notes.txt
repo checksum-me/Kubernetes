@@ -1,0 +1,3 @@
+//Create pod imperatively
+k run redis --image=redis
+k run nginx --image=nginx
