@@ -1,3 +1,44 @@
+//To view all the resources in the default namespace
+k get all
+
+//To view all the resources in all the namespace
+k get all -A
+
+//List all the api resources and their api
+k api-resources
+
+//List all the api resources and grep a particular resource
+k api-resources | grep -i "replicaset"
+
 //Create pod imperatively
 k run redis --image=redis
 k run nginx --image=nginx
+
+//Command to edit pods on the go
+//Only listed properties below are editable
+//spec.containers[*].image
+//spec.initContainers[*].image
+//spec.activeDeadlineSeconds
+//spec.tolerations
+//spec.terminationGracePeriodSeconds
+k edit pod redis
+
+//We can extract the pod definition file and edit it using the below Command
+k get pod <pod-name> -o yaml > pod-definition.yaml
+
+//After downloading the yaml in the above step, we can replace it using the below Command
+k replace -f <yamlfilename>.yaml
+
+//Create a kubernetes resource from a yaml file
+k create -f <yamlfilename>.yaml
+
+//To get a resource and its definition
+k get <resourcetype> <resourcename>
+k get pod nginx
+
+//To delete a resource
+k delete <resourcetype> <resourcename>
+k delete pod nginx
+
+//Scale a replicaset
+k scale -replicas=6 -f <yamlfilename>.yaml
