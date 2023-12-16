@@ -1,3 +1,10 @@
+//kubectl [command] [TYPE] [NAME] -o <output_format>
+//Here are some of the commonly used formats:
+//    -o jsonOutput a JSON formatted API object.
+//    -o namePrint only the resource name and nothing else.
+//    -o wideOutput in the plain-text format with any additional information.
+//    -o yamlOutput a YAML formatted API object.
+
 //To view all the resources in the default namespace
 k get all
 
@@ -13,6 +20,9 @@ k api-resources | grep -i "replicaset"
 //Create namespace
 k create namespace dev
 
+//Get all namespace
+k get ns --no-headers| wc -l
+
 //Switch namespace permanently to some ns 
 k config set-context $(kubectl config current-context) --namespace=dev
 
@@ -25,11 +35,36 @@ k get pods -A
 k get pods --all-namespace
 //gets all pods from a specified namespace
 k get pods --namespace=kube-system
+k get pods -n research --no-headers | wc -l
+
 
 
 //Create pod imperatively
 k run redis --image=redis
 k run nginx --image=nginx
+k run redis --image redis -n finance
+k run redis --image redis:alpine --labels='tier=db'
+
+//Create Pod dry run only 
+kubectl run nginx --image=nginx --dry-run=client -o yaml > <filename>.yaml
+kubectl create deployment --image=nginx nginx --replicas=4 --dry-run -o yaml > <filename>.yaml
+
+//Create a Service named redis-service of type ClusterIP to expose pod redis on port 6379
+kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml
+//This will not use the pods labels as selectors, instead it will assume selectors as app=redis.
+//So generate the file and modify the selectors before creating the service
+kubectl create service clusterip redis --tcp=6379:6379 --dry-run=client -o yaml
+
+//Create a Service named nginx of type NodePort to expose pod nginx’s port 80 on port 30080 on the nodes:
+//This will automatically use the pod’s labels as selectors, but you cannot specify the node port. 
+//You have to generate a definition file and then add the node port in manually before creating the service with the pod.
+kubectl expose pod nginx --port=80 --name nginx-service --type=NodePort --dry-run=client -o yaml
+
+//This will not use the pods labels as selectors
+kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=client -o yaml
+
+//Create deployment
+k create deployment webapp --image=kodekloud/webapp-color --replicas=3
 
 //Command to edit pods on the go
 //Only listed properties below are editable
