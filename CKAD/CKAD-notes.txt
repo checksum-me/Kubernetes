@@ -1,3 +1,4 @@
+//CKAD Course credits to kodekloud - awesome course providing the necessary (as seen below) for CKAD
 //kubectl [command] [TYPE] [NAME] -o <output_format>
 //Here are some of the commonly used formats:
 //    -o jsonOutput a JSON formatted API object.
@@ -101,3 +102,20 @@ db-service.dev.svc.cluster.local
 //svc - sub domain for the service
 //dev - namespace
 //db-service - service name itself
+
+
+//configmaps
+//https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+kubectl get configmaps
+k describe configmaps <configmap-name>
+k create configmap webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
+
+//secrets
+//https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data
+k get secrets
+k describe secrets <secret-name>
+k create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+
+
+//Encrypting secret in ETCD
+//https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
