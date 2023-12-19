@@ -152,8 +152,33 @@ kubectl set serviceaccount deploy/web-dashboard dashboard-sa
 // PreferNoSchedule - 
 // NoExecute - New pods will be not be scheduled if they dont tolerate and also existing pods will be evicted if they dont tolerate
 
+//To Taint
 kubectl taint nodes node1 app=blue:NoSchedule
+
+//To UnTaint
+kubectl taint nodes node1 app=blue:NoSchedule-
+
 //Toleration is added in the pod definition file. in the spec.tolerations
 // spec.tolerations.key(app),spec.tolerations.operator(Equal), spec.tolerations.value(blue), spec.tolerations.effect(NoSchedule)
 
 //Taint and Toleration doesnt tell pod to go to particular node, instead it tells nodes to accept particular pods that tolerates the taint
+//To see the taint run the below command
+kubectl describe node node1 | grep -i taint
+
+//Node affinity helps restrict pod to certain node
+//Node selector help control which node the pod is scheduled
+//add it to pod definition i.e. spec.nodeSelector and spec.nodeSelector.key.value
+//we need to label the node for the key value to work
+
+//kubectl label nodes <node-name> <label-key>=<label-value>
+//this has some limitations and hence node affinity was introduced
+
+//Available node affinity values
+//      requiredDuringSchedulingIgnoredDuringExecution
+//      preferredDuringSchedulingIgnoredDuringExecution
+//Planned node affinity values
+//      requiredDuringSchedulingRequiredDuringExecution
+
+
+
+
