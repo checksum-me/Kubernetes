@@ -119,3 +119,14 @@ k create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB
 
 //Encrypting secret in ETCD
 //https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
+
+//ETCD database backup
+//this command will install the ETCDCTL
+apt-get install etcd-client 
+
+//check if already the encryption is enabled
+ps -aux| grep kube-api | grep "encryption-provider-config"
+
+//look at the manifest file
+cat /etc/kubernetes/manifests/kube-apiserver.yaml
+
