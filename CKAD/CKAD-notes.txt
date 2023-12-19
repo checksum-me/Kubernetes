@@ -130,3 +130,30 @@ ps -aux| grep kube-api | grep "encryption-provider-config"
 //look at the manifest file
 cat /etc/kubernetes/manifests/kube-apiserver.yaml
 
+//follow steps in this guide to encrypt data at rest in ETCD DB
+//https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
+//only secrets created newly after applying the encryption configuration will reflect this change 
+
+//Service account
+kubectl create serviceaccount dashboard-sa 
+kubectl get serviceaccount
+kubectl describe serviceaccount dashboard-sa
+
+//To not mount the automatic service account in the pod set automountServiceAccountToken to false
+
+//Make use of the kubectl set command. Run the following command to use the newly created service account
+kubectl set serviceaccount deploy/web-dashboard dashboard-sa
+
+//Taint and tolerations
+//kubectl taint node nodename key=value:taint-effect
+//tain-effect defines what will happen to the pod if they do not tolerate the taint
+//There are three taint effects
+// NoSchedule - New pods will not be scheduled if they dont tolerate 
+// PreferNoSchedule - 
+// NoExecute - New pods will be not be scheduled if they dont tolerate and also existing pods will be evicted if they dont tolerate
+
+kubectl taint nodes node1 app=blue:NoSchedule
+//Toleration is added in the pod definition file. in the spec.tolerations
+// spec.tolerations.key(app),spec.tolerations.operator(Equal), spec.tolerations.value(blue), spec.tolerations.effect(NoSchedule)
+
+//Taint and Toleration doesnt tell pod to go to particular node, instead it tells nodes to accept particular pods that tolerates the taint
