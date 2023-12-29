@@ -37,7 +37,8 @@ k get pods --all-namespace
 //gets all pods from a specified namespace
 k get pods --namespace=kube-system
 k get pods -n research --no-headers | wc -l
-
+k get pods --selector env=dev --no-headers
+k get pods --selector env=prod,bu=finance,tier=frontend --no-headers
 
 
 //Create pod imperatively
@@ -178,6 +179,22 @@ kubectl describe node node1 | grep -i taint
 //      preferredDuringSchedulingIgnoredDuringExecution
 //Planned node affinity values
 //      requiredDuringSchedulingRequiredDuringExecution
+
+//logging
+// -f flag shows live logs
+k logs -f <pod-name> 
+//if multiple containers provide the container name
+k logs -f <pod-name> <container-name>
+
+//metrics server
+//deploy metric server by cloning the deployment files
+git clone https://github.com/kubernetes-incubator/metrics-serve
+git clone https://github.com/kodekloudhub/kubernetes-metrics-server.git
+//
+k create -f deploy/1.8+/
+//after installation the below commands can be run
+k top node
+k top pod
 
 
 
