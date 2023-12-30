@@ -197,5 +197,22 @@ k top node
 k top pod
 
 
+//Now, in k8s version 1.20+ we can create an Ingress resource from the imperative way like this:-
+//Format - kubectl create ingress <ingress-name> --rule="host/path=service:port"
+//Example - kubectl create ingress ingress-test --rule="wear.my-online-store.com/wear*=wear-service:80"
+
+//List of all commands - https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-ingress-em-
+
+//ingress requires Ingress Controller which requires two service accounts with proper role and role bindings in place. Also requires a config map as well. 
+//create a service to expose the ingress-controller deployment as a NodePort
+//once the ingress controller is created, the ingress resource can be created
+
+//use ingress-controller.yaml to create the ingress controller
+//next expose the newly created controller via the service (note: this is not the ingress resource)
+k expose deploy ingress-controller -n ingress-space --name ingress --port=80 --target-port=80 --type NodePort
+
+//use the below command to create the ingress resource
+k create ingress ingress-wear-watch -n app-space --rule="/wear=wear-service:8080" --rule="/watch=video-service:8080"
+//add annotations rewrite-target and ssl-redirect if the url is not loading
 
 
