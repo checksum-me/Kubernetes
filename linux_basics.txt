@@ -24,10 +24,35 @@ pwd
 
 //make/create directory
 mkdir
+//to make directory in one shot
+mkdir -p /tmp/asia/india/bangalore
+
 
 //chain commands with semi colon ;
 cd new_directory; mkdir www; pwd
 
+//Remove directory and all of its contents
+rm -r /tmp/my_dir1
+//Remove or delete a file
+rm new_file.txt
+
+//Copy directory and its contents from one location to another
+cp -r my_dir1 /tmp/my_dir1
+//Copy a file as below
+cp new_file.txt copy_file.txt
+
+//TO move a file use the below commands
+//If the file is moved to the same path with different name, its like renaming the file
+mv new_file.txt <new_path/filename>
+
+//Create new file with no content
+touch new_file.txt
+
+//Add data as below and press Ctrl+D when done
+cat > new_file.txt
+
+//to view the contents
+cat new_file.txt
 
 
 
