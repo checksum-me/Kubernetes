@@ -1,0 +1,33 @@
+//Four types of shell
+// Bourne shell (sh shell)
+// C shell (csh or tcsh )
+// Z shell (zsh )
+// Bourne again shell (bash )
+
+
+//prints the shell being used 
+// something like - /bin/bash
+// $SHELL is an environment variable
+echo $SHELL
+
+//print to screen
+echo Hi
+
+//list files and folders 
+ls 
+
+//change directory
+cd <dirname>
+
+//preset working directory
+pwd
+
+//make/create directory
+mkdir
+
+//chain commands with semi colon ;
+cd new_directory; mkdir www; pwd
+
+
+
+
