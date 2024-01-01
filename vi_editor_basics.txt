@@ -1,0 +1,5 @@
+vi <filename>
+
+//VI has two modes of operation
+// Command Mode and Insert Mode
+
