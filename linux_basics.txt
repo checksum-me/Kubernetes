@@ -90,6 +90,7 @@ cat /etc/*release*
 rpm -i telnet.rpm //install a Package
 rpm -e telnet.rpm //uninstall a Package
 rpm -q telnet.rpm //query a package 
+rpm -qa //lists all installed packages
 
 //YUM 
 //high level package Manager
@@ -121,4 +122,56 @@ yum --showduplicates list ansible
 //To install specific version , specify the version from the above available list 
 yum install ansible-2.4.2.0
 
+
+//Services
+
+//start a Service
+service httpd start
+
+//newer method to start service
+systemctl start httpd
+
+//service command uses the systemctl command underneath
+
+//Stop a service
+systemctl stop httpd
+
+//Check the status of a service
+systemctl status httpd
+
+//Configure the service to start up at the startup
+systemctl enable httpd
+
+//Configure the service to stop at the startup
+systemctl disable httpd
+
+//systemctl can be configured using the systemd unit files
+//these files are located at /etc/systemd/system
+//file must be named in the name of the service and with extension of '.service'
+//example my_app.service
+
+my_app.service
+    [Unit]
+    Description=My Python Web application
+
+    [Service]
+    ExecStart=/usr/bin/python3 /opt/code/my_app.py 
+    ExecStartPre=/opt/code/configure_db.sh
+    ExecStartPost=/opt/code/email_status.sh
+    Restart=always  
+
+    [Install]
+    WantedBy=multi-user.target
+
+//To let systemd know a new service has been added 
+systemctl daemon-reload
+
+//Start the custom service created 
+systemctl start my_app
+
+//To start at bootup , added the Install as above in service file to use run level in WantedBy
+//then run the below command
+systemctl enable my_app
+
+//Docker service file is located at /lib/systemd/system/docker.service
 
