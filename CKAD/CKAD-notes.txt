@@ -216,3 +216,25 @@ k create ingress ingress-wear-watch -n app-space --rule="/wear=wear-service:8080
 //add annotations rewrite-target and ssl-redirect if the url is not loading
 
 
+//Docker has two types of mount - volume mount and bind mount 
+//src will be local or third party storage like aws, afs, etc and target will be the location within the container which we want to be saved externally
+
+//In Kubernetes world, create the volume first i.e. as simple as in the host and then mount it using the volumemount in the container spec
+
+//We cant always create volume in each pod definition file and hence we have create the PV 
+//Persistent Volume (PV) acts like a pool and whenever a Pod makes a PVC (Persistent Volume Claim) it provides the required storage to it
+//this is the advantage over the volume-simple.yaml
+
+//every PVC is bound to one PV only
+//Basis on the below properties
+// Capacity , Access modes, Volume Modes, Storage Class
+//use labels and selectors for precision binding i.e PV will get label and PVC will get selector 
+// 1to1 binding PV to PVC. If no PV is found, then PVC will wait for a PV to be available 
+
+//When PVC is deleted, PV by default is set to retain, until it is manually set to delete by admin
+//If PVReclaimPolicy set to Delete, then if PVC is deleted, then the PV is also deleted
+//One more option is for PVReclaimPolicy is Recycle , data will be scrubbed in the storage location and made available to the other PVC
+
+//refer volume-pvc.yaml to see how to mount the PVC to Pod
+// sample yaml available at https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolume
+
