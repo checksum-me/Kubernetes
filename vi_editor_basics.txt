@@ -2,4 +2,21 @@ vi <filename>
 
 //VI has two modes of operation
 // Command Mode and Insert Mode
+//Opens in Command mode by default
+// 'i' opens the insert mode and after editing a file, press 'esc' to exit insert mode and back to command mode
+// In command mode the below
+x - delete a character
+dd - delete a line
+yy - copy/yank a line
+p - paste line 
+Ctrl+u - scroll up
+Ctrl+d - scroll down
 
+: - command mode 
+:q - quit(discard changes, ! - to force it )
+:wq - save and quit
+:w - save
+:w filename - to save to a particular filename
+
+/ - find mode
+/of - finds all occurences of 'of'. (n to next occurence)
