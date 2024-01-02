@@ -66,4 +66,59 @@ su <username>
 //ssh using a particular user (aparna) into the host (192.168.1.2)
 ssh aparna@192.168.1.2
 
+//add them into the /etc/sudoers to grant them root user access
+//they can type sudo in front of the commands that requires elevated privileges
+
+sudo ls /root
+//sometimes if you get permission denied error, then use the sudo command if you have root access
+
+//Download files
+curl http://www.some-site.com/some-file.txt -O 
+
+//-O option is added to the curl to save the result to the file
+wget http://www.some-site.com/some-file.txt -O some-file.txt
+
+//Check OS version
+ls /etc/*release* 
+cat /etc/*release*
+
+//Package Managers
+//RPM - Red hat Package Manager
+//RPM requires us to point the exact location where the package is available 
+//It does not care about the dependencies a package may have
+
+rpm -i telnet.rpm //install a Package
+rpm -e telnet.rpm //uninstall a Package
+rpm -q telnet.rpm //query a package 
+
+//YUM 
+//high level package Manager
+//Helps with dependencies , uses RPM underneath
+
+yum install ansible //installs ansible and all of its dependencies
+
+//Repos
+//Information about the repos is stored in /etc/yum.repos.d 
+
+//gives the list of repositories 
+yum repolist 
+
+//shows where the repos are configured in each .repo file 
+ls /etc/yum.repos.d 
+
+//gives list of installed pacakge 
+yum list <packagename> 
+
+//example
+yum list ansible 
+
+//Uninstall a package
+yum remove ansible
+
+//To show available packages to install 
+yum --showduplicates list ansible 
+
+//To install specific version , specify the version from the above available list 
+yum install ansible-2.4.2.0
+
 
