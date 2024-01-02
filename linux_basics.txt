@@ -54,5 +54,16 @@ cat > new_file.txt
 //to view the contents
 cat new_file.txt
 
+//which user I am 
+whoami
+
+//more information of the user
+id 
+
+//to switch user ,  e.g. -> su aparna, it will as for aparna user password
+su <username> 
+
+//ssh using a particular user (aparna) into the host (192.168.1.2)
+ssh aparna@192.168.1.2
 
 
