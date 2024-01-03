@@ -248,3 +248,33 @@ k create ingress ingress-wear-watch -n app-space --rule="/wear=wear-service:8080
 //StorageClass creates the PV, we dont need to manually create the PV
 // https://kubernetes.io/docs/concepts/storage/storage-classes/
 
+//Stateful set
+// If you need pods to come up in a sequential order and with a predictable name, then stateful set is used
+// Its like Deployment only, with above differences
+// In the Deployment yaml we can change Kind to StatefulSet and add a serviceName with a headless service name
+// Ordered, Graceful deployment - StatefulSet
+// Pods are deleted or bought down in the reverse order
+// If PodManagementpolicy is set to Parallel, this ordered approach is not followed. Default value is ordered
+
+
+//In General you need to not refer other pods by IP address, rather use hostname. If you want static hostname use the stateful set
+//Using stateful set guarantees that the hostname is static eventhough the Pod crashes and comes up with new IP 
+
+//Headless service 
+// Usually service load balances the request among the pods under it, we cant reach a pod uniquely
+// But a headless service gives a unique name to each pod, which is very useful to access specific pods only in stateful sets as pods cant be exposed but only via a service
+// e.g. mysql-0.mysql-h.defaul.svc.cluster.local to reach mysql-0 pod under service mysql-h 
+// ClusterIP: None will create a headless service in a normal service yaml file
+
+
+//The below two subdomain and hostname are used in deployment as optional fields and they generate the same name for the Pod in DNS
+// In Pod definition specify subdomain: as the name of the headless service . This creates a DNS record to the name of the service to point to the Pod
+// To create A record for the Pod specify the hostname: option 
+
+//But in a Stateful Set if we just specify the serviceName with the headless service name, then we can skip subdomain and hostname in the spec yaml
+//StatefulSet create unique A records for each replica to be accessed individually 
+
+//VolumeClaimTemplate is used in the Pod definition of deployment to automatically create unique PV for each Pod rather than creating manually PVC and using the same across the Pods
+// pod created -> VolumeClaimTemplate creates a PVC -> PVC has a storage class which creates a PV -> PV is created in the provider as physical storage 
+
+//If a Pod is deleted and recreated, then StatefulSet reattaches the Pod to the same PVC and ensures storage stability 
