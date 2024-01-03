@@ -238,3 +238,13 @@ k create ingress ingress-wear-watch -n app-space --rule="/wear=wear-service:8080
 //refer volume-pvc.yaml to see how to mount the PVC to Pod
 // sample yaml available at https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolume
 
+//Storage Classes
+//In the PV we specify AWS, GCE or AZ File Shares, we might need to manually provision them everytime
+//This manual provisioning is called static provisioning 
+
+//Dynamic Provisioning is preferred 
+//create a resource of Kind StorageClass 
+//This StorageClass can replace PV and PV will not be required, instead in PVC we can directly specify storageClassName
+//StorageClass creates the PV, we dont need to manually create the PV
+// https://kubernetes.io/docs/concepts/storage/storage-classes/
+
