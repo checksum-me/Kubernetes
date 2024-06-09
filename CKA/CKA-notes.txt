@@ -1,0 +1,199 @@
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+kubeadm | 1.29.0-1.1 | https://pkgs.k8s.io/core:/stable:/v1.29/deb  Packages
+
+
+1.29.0-1.1
+
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.29.0-1.1' && \
+sudo apt-mark hold kubeadm
+
+//for master
+sudo kubeadm upgrade apply v1.29.0
+
+//for worker
+sudo kubeadm upgrade node
+
+
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.29.0-1.1' kubectl='1.29.0-1.1' && \
+sudo apt-mark hold kubelet kubectl
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+-------------------------------------------------------------------------
+
+ETCD 
+Server certificate -> /etc/kubernetes/pki/etcd/server.crt
+ETCD CA Certificate -> /etc/kubernetes/pki/etcd/ca.crt
+
+/opt/snapshot-pre-boot.db
+
+echo ETCDCTL_API=3
+printenv
+
+ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot save /opt/snapshot-pre-boot.db
+
+-------
+
+To restore snapshot
+
+ETCDCTL_API=3 etcdctl  --data-dir /var/lib/etcd-from-backup \
+snapshot restore /opt/snapshot-pre-boot.db
+
+Next, update the /etc/kubernetes/manifests/etcd.yaml
+
+volumes:
+  - hostPath:
+      path: /var/lib/etcd-from-backup
+	  
+You can run the command: watch "crictl ps | grep etcd" to see when the ETCD pod is restarted.
+
+----------
+List nodes in etcd external server
+
+etcdctl --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem \
+  member list
+---------------- 
+Restoring in External ETCD server
+
+Step 1. Copy the snapshot file from the student-node to the etcd-server. In the example below, we are copying it to the /root directory:
+student-node ~  scp /opt/cluster2.db etcd-server:/root
+cluster2.db                                                                                                        100% 1108KB 178.5MB/s   00:00    
+
+Step 2: Restore the snapshot on the cluster2. Since we are restoring directly on the etcd-server, we can use the endpoint https:/127.0.0.1. Use the same certificates that were identified earlier. Make sure to use the data-dir as /var/lib/etcd-data-new:
+
+etcd-server ~ ➜  ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/pki/ca.pem --cert=/etc/etcd/pki/etcd.pem --key=/etc/etcd/pki/etcd-key.pem snapshot restore /root/cluster2.db --data-dir /var/lib/etcd-data-new
+{"level":"info","ts":1662004927.2399247,"caller":"snapshot/v3_snapshot.go:296","msg":"restoring snapshot","path":"/root/cluster2.db","wal-dir":"/var/lib/etcd-data-new/member/wal","data-dir":"/var/lib/etcd-data-new","snap-dir":"/var/lib/etcd-data-new/member/snap"}
+{"level":"info","ts":1662004927.2584803,"caller":"membership/cluster.go:392","msg":"added member","cluster-id":"cdf818194e3a8c32","local-member-id":"0","added-peer-id":"8e9e05c52164694d","added-peer-peer-urls":["http://localhost:2380"]}
+{"level":"info","ts":1662004927.264258,"caller":"snapshot/v3_snapshot.go:309","msg":"restored snapshot","path":"/root/cluster2.db","wal-dir":"/var/lib/etcd-data-new/member/wal","data-dir":"/var/lib/etcd-data-new","snap-dir":"/var/lib/etcd-data-new/member/snap"}
+
+Step 3: Update the systemd service unit file for etcdby running vi /etc/systemd/system/etcd.service and add the new value for data-dir:
+
+[Unit]
+Description=etcd key-value store
+Documentation=https://github.com/etcd-io/etcd
+After=network.target
+
+[Service]
+User=etcd
+Type=notify
+ExecStart=/usr/local/bin/etcd \
+  --name etcd-server \
+  --data-dir=/var/lib/etcd-data-new \
+---End of Snippet---
+
+Step 4: make sure the permissions on the new directory is correct (should be owned by etcd user):
+
+etcd-server /var/lib ➜  chown -R etcd:etcd /var/lib/etcd-data-new
+
+etcd-server /var/lib ➜ 
+
+
+etcd-server /var/lib ➜  ls -ld /var/lib/etcd-data-new/
+drwx------ 3 etcd etcd 4096 Sep  1 02:41 /var/lib/etcd-data-new/
+etcd-server /var/lib ➜
+
+Step 5: Finally, reload and restart the etcd service.
+
+etcd-server ~/default.etcd ➜  systemctl daemon-reload 
+etcd-server ~ ➜  systemctl restart etcd
+etcd-server ~ ➜
+
+Step 6 (optional): It is recommended to restart controlplane components (e.g. kube-scheduler, kube-controller-manager, kubelet) to ensure that they don't rely on some stale data.
+---------------- 
+
+Generate private and public key using OpenSSL
+
+Private Key
+openssl genrsa -out mykey.key 1024
+
+Public Key
+openssl rsa -in mykey.key -pubout > mykey.pem 
+
+----------------
+Generate CSR via OpenSSL
+
+openssl req -new -key mykey.key -out mycsr.csr -subj "/C=US/ST=CA/O=MyOrg,Inc./CN=my-bank.com"
+----------------
+Generate CSR for Admin User 
+
+openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
+
+## /O=system:masters specifies the group which will use this certificate
+----------------
+Generate CSR for API server 
+openssl req -new -key apiserver.key -subj "/CN=kube-apiserver" -out apiserver.csr -config openssl.cnf
+
+Create below openssl config file to pass in the above command. This is for the alternate names
+***
+openssl.cnf
+[req]
+req_extensions= v3_req
+distinguished_name = req_distinguished_name
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation,
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster.local
+IP.1 = 10.96.0.1
+IP.2 = 172.17.0.87
+***
+----------------
+Sign certificate for API Server
+
+openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out apiserver.crt -extensions v3_req -extfile openssl.cnf -days 1000
+----------------
+Sign Certificate for CA
+
+openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt
+----------------
+Sign Certificate for User using CA 
+
+openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt 
+
+----------------
+
+Public Key - *.crt or *.pem
+
+Private key - *.key or *-key.pem
+
+----------------
+Follow below steps to debug a certificate using openssl
+
+Below command displays the properties of the certificate file
+openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
+----------------
+
+If cluster is setup from scratch search the native os logs for issues in certificates
+
+journalctl -u etcd.service -l 
+
+If cluster is setup using kubeadm, then components are deployed as pods, use below command
+
+kubectl logs etcd-master -n kube-system
+
+If api-server or cluster is down use docker to debug the logs
+
+//list all the conatiners, pick the POD kube_system one
+docker ps -a 
+
+//view logs using docker logs
+docker logs <container_id>
+----------------
+
+----------------
+
+
