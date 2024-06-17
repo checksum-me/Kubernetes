@@ -193,6 +193,27 @@ docker ps -a
 //view logs using docker logs
 docker logs <container_id>
 ----------------
+//List of commands for network troubleshooting 
+//changes made using below command are only valid till a restart, if you want to persist set them in the /etc/network/interfaces file
+
+//list and modify interfaces on the host (linux)
+ip link 
+
+//ip addresses assigned to the interfaces
+ip addr
+
+//set ip addresses on the interfaces
+ip addr add 192.168.1.10/24 dev eth0
+
+//to view the routing table
+ip route 
+
+//add entries into the routing table
+ip route add 192.168.1.0/24 via 192.168.2.1
+
+//command to check if ip forwarding is enabled or not is below
+//if set manually in the below location, it persists only till restart. Should be set in the systemctl conf file 
+cat /proc/sys/net/ipv4/ip_forward 
 
 ----------------
 
