@@ -215,6 +215,24 @@ ip route add 192.168.1.0/24 via 192.168.2.1
 //if set manually in the below location, it persists only till restart. Should be set in the systemctl conf file 
 cat /proc/sys/net/ipv4/ip_forward 
 
+//DNS server info is stored in the below location
+cat /etc/resolv.conf
+
+//Host file acts like a local DNS 
+cat /etc/hosts
+
+//if server is present in both places, local host file takes priority and is defined in the below location
+cat /etc/nsswitch.conf
+
+//IPv4 to Hostnames - A record
+//IPv6 to hostname - AAAA (quad A) record
+//One hostname to another hostname - CNAME record
+
+
+//DNS resolution test 
+//nslookup ignores entry in the local host file
+nslookup
+
 ----------------
 
 
