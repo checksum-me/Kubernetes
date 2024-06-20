@@ -233,6 +233,14 @@ cat /etc/nsswitch.conf
 //nslookup ignores entry in the local host file
 nslookup
 
+//DNS server port is port 53
 ----------------
+//Network Namespaces
 
+//Create a new network Namespaces
+ip netns add red 
+ip netns add blue 
+
+//List network Namespaces
+ip netns
 
