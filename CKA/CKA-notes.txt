@@ -244,3 +244,25 @@ ip netns add blue
 //List network Namespaces
 ip netns
 
+//ip link - this command is used to list Namespaces
+//To do that in the namespace use the below commands
+ip netns exec red ip link
+ip -n red link 
+
+//Same applies for the arp table
+arp 
+ip netns exec red arp
+
+//Same applies for the routing table
+route
+ip netns exec red route
+
+//Default gateway is availble using below command
+ip route show default
+
+//find ports listening in a server (which port is listended by whom)
+netstat -nplt 
+
+//find which port clients are listening more on etcd
+netstat -anp | grep etcd 
+
