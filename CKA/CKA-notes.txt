@@ -326,3 +326,74 @@ users:
     client-key: /etc/kubernetes/pki/users/test-user/test-user.key
 
 -----------------------------------
+
+
+Upgrading Nodes via kubeadm
+
+https://v1-29.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+
+# Find the latest 1.29 version in the list.
+# It should look like 1.29.x-*, where x is the latest patch.
+sudo apt update
+sudo apt-cache madison kubeadm
+
+
+# replace x in 1.29.x-* with the latest patch version
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.29.0-1.1' && \
+sudo apt-mark hold kubeadm
+
+#Verify that the download works and has the expected version:
+kubeadm version
+
+#Verify the upgrade plan:
+sudo kubeadm upgrade plan
+
+#Choose a version to upgrade to, and run the appropriate command. For example:
+# replace x with the patch version you picked for this upgrade
+sudo kubeadm upgrade apply v1.29.x
+
+-------------------------------
+
+#Drain the node 
+#Prepare the node for maintenance by marking it unschedulable and evicting the workloads:
+
+# replace <node-to-drain> with the name of your node you are draining
+kubectl drain <node-to-drain> --ignore-daemonsets
+
+#Upgrade the kubelet if the node is not reflecting the latest version
+# replace x in 1.29.x-* with the latest patch version
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.29.0-1.1' kubectl='1.29.0-1.1' && \
+sudo apt-mark hold kubelet kubectl
+
+#Restart the kubelet:
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+
+#Uncordon the node 
+#Bring the node back online by marking it schedulable:
+# replace <node-to-uncordon> with the name of your node
+kubectl uncordon <node-to-uncordon>
+
+-------------------------------
+
+#Take the backup of ETCD at the location /opt/etcd-backup.db on the controlplane node.
+etcdctl snapshot save --help
+
+export ETCDCTL_API=3
+etcdctl snapshot save --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --endpoints=127.0.0.1:2379 /opt/etcd-backup.db
+
+-------------------------------
+Create pod from imperative command
+
+kubectl run secret-1401 -n admin1401 --image=busybox --dry-run=client -oyaml --command -- sleep 4800 > admin.yaml
+
+-------------------------------
+
+One time pod for testing connectivity
+
+kubectl run busybox -it --image=busybox:1.28 --restart=Never --rm -- nslookup nginx-resolver-service
+
+-------------------------------
