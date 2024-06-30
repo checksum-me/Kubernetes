@@ -397,3 +397,35 @@ One time pod for testing connectivity
 kubectl run busybox -it --image=busybox:1.28 --restart=Never --rm -- nslookup nginx-resolver-service
 
 -------------------------------
+
+Check service account permissions
+
+kubectl auth can-i <verb> <resource> --as=system:serviceaccount:<namespace>:<serviceaccountname> [-n <namespace>]
+
+List all permissions for service account
+
+kubectl auth can-i --as=system:serviceaccount:default:default --list
+
+-------------------------------
+
+Command to check top node
+
+ kubectl top node --context cluster2 --no-headers | sort -nr -k2 | head -1
+
+ -------------------------------
+
+Troubleshooting cluster 
+
+#Check the kubelet logs for the error if etcd pod is not coming up as below 
+journalctl -u kubelet -f
+
+#Restart kubelet as below 
+systemctl restart kubelet
+
+#Check the pod logs for the warning on the health probes (live and ready), sometimes port might be wrong
+
+-------------------------------
+etcd backup as below
+ETCDCTL_API=3 etcdctl --endpoints=https://[127.0.0.1]:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key snapshot save /opt/etcd-boot-cka18-trb.db
+
+-------------------------------
