@@ -1,0 +1,10 @@
+##Kubelet Security
+#Kubelet will run as a service or if setup via Kubeadm then the config file will have the config details
+#Kubelet Service location -> /usr/local/bin/kubelet
+#Kubelet config file -> kubelet-config.yaml
+
+#Set the below to false in the config file
+--anonymous-auth=false
+#otherwise the below urls will allow anyone to read the kubelet status
+
+#Kubelet support two authentication mechanism - Certificate based and Bearer token based
