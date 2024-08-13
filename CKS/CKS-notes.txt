@@ -1,10 +1,28 @@
 ##Kubelet Security
 #Kubelet will run as a service or if setup via Kubeadm then the config file will have the config details
-#Kubelet Service location -> /usr/local/bin/kubelet
-#Kubelet config file -> kubelet-config.yaml
+#Kubelet Service location -> /usr/local/bin/kubelet in /etc/systemd/system/kube-apiserver.service
+#Kubelet config file -> /var/lib/kubelet/kubelet-config.yaml
+
+#Kubelet Port Access
+10250 - Serves API that allows full Access
+10255 - Serves API that allows unauthenticated read Access
+
+curl -sk https://localhost:10250/pods/
+curl -sk https://localhost:10250/logs/syslog
+curl -sk http://localhost:10255/metrics
 
 #Set the below to false in the config file
 --anonymous-auth=false
-#otherwise the below urls will allow anyone to read the kubelet status
+#otherwise the above urls will allow anyone to read the kubelet status
 
 #Kubelet support two authentication mechanism - Certificate based and Bearer token based
+
+#For certificate based authentication
+--client-ca-file=/path/to/ca.crt or clientCAFile: /path/to/ca.crt
+
+#Default kubelet allows all requests from API server without auth, to set auth use auth-mode to Webhook as below
+#When set kubelet authorises req via kube-apiserver
+--authorization-mode=Webhook or authorization: mode: Webhook
+
+#Read only port by default is set to 10255 which enables to read metrics server without auth, set to 0 to disable this as below
+--read-only-port=0 or readOnlyPort: 0
