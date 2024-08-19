@@ -26,3 +26,16 @@ curl -sk http://localhost:10255/metrics
 
 #Read only port by default is set to 10255 which enables to read metrics server without auth, set to 0 to disable this as below
 --read-only-port=0 or readOnlyPort: 0
+
+#Check kubelet config file
+ps -aux | grep kubelet
+
+#Kubelet config needs to be edited to change auth mode
+vi /var/lib/kubelet/config.yaml
+#This is one setting
+authentication:
+  anonymous:
+    enabled: false
+#This is another setting
+authorization:
+  mode: Webhook
