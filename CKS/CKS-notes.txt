@@ -36,6 +36,23 @@ vi /var/lib/kubelet/config.yaml
 authentication:
   anonymous:
     enabled: false
+#Once above change is done, you should get Unauthorized
+controlplane ~ ➜  curl -sk https://localhost:10250/pods
+Unauthorized
+
 #This is another setting
 authorization:
   mode: Webhook
+#Once above change is done, it will not allow to connect as anonymous
+
+#This is another setting
+#Set readOnlyPort as 0 in /var/lib/kubelet/config.yaml and restart kubelet
+#The metrics URL wont work
+
+#Restart kubelet service to take effect 
+systemctl restart kubelet.service
+systemctl status kubelet.service
+
+curl -sk https://localhost:10250/pods
+curl -sk http://localhost:10255/metrics
+
