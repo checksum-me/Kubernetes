@@ -1,4 +1,4 @@
-##Kubelet Security
+###Kubelet Security
 #Kubelet will run as a service or if setup via Kubeadm then the config file will have the config details
 #Kubelet Service location -> /usr/local/bin/kubelet in /etc/systemd/system/kube-apiserver.service
 #Kubelet config file -> /var/lib/kubelet/kubelet-config.yaml
@@ -56,3 +56,22 @@ systemctl status kubelet.service
 curl -sk https://localhost:10250/pods
 curl -sk http://localhost:10255/metrics
 
+###Kubectl Proxy and Port forward
+kubectl proxy - Opens proxy port to API server
+kubectl port-forward - Opens port to target deployment pods
+##Kubectl Proxy
+#The below command starts a proxy server to the API server - default port is 8001
+#Once the proxy server is started, we can connect to it using curl command locally via localhost
+#To run the process in background you can use & operator at the end
+
+kubectl proxy &
+#To run on a different port
+kubectl proxy --port 8002 &
+curl 127.0.0.1:8001/version
+
+##Port forward
+#Port from out laptop 28080 is forwarded to the 80 port of the service
+kubectl port-forward service/nginx 28080:80
+kubectl port-forward pod/nginx-77d8468669-52jpx 8005:80 &
+#The below command can access the service
+curl http://localhost:28080/
