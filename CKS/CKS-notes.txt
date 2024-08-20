@@ -75,3 +75,58 @@ kubectl port-forward service/nginx 28080:80
 kubectl port-forward pod/nginx-77d8468669-52jpx 8005:80 &
 #The below command can access the service
 curl http://localhost:28080/
+
+###Kubernetes Dashboard
+#View and create new apps. Can do anything
+#To access in local laptop create proxy and open the below link if dashboard is setup in cluster
+kubectl proxy
+#Open below link in browser
+https://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy
+
+#Since the dashboard is clusterip its not accessible outside cluster
+#Can be made loadbalancer or nodeport
+
+##Dashboard authentication
+#Can use Token or KubeConfig file
+#For token , create user and assign RBAC permission, generate token and enter in website
+
+#Run below command to create dashboard
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+
+#Now run kubectl proxy with the below command 
+kubectl proxy --address=0.0.0.0 --disable-filter &
+
+#Note: From a security perspective do not use --disable-filter option as it can leave you vulnerable to XSRF attacks, when used with an accessible port. We have used this option to make our lab environment work with the kubernetes dashboard so you can access it through a browser. Ideally you would be accessing it through a kubectl proxy on your localhost only.
+#So in actual environments do not use --disable-filter option as its a major security risk.
+
+#Get token by running below and login to UI with that token:
+kubectl get secrets -n kubernetes-dashboard admin-user -o go-template="{{.data.token | base64decode}}"
+
+#Below are some references:
+https://redlock.io/blog/cryptojacking-tesla
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+https://github.com/kubernetes/dashboard
+https://www.youtube.com/watch?v=od8TnIvuADg 
+https://blog.heptio.com/on-securing-the-kubernetes-dashboard-16b09b1b7aca
+https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+###Verify the platform binaries
+#Important to verify hash of the downloaded file
+
+#Download file using curl command
+curl https://dl.k8s.io/v1.20.0/kubernetes.tar.gz -L -o kubernetes.tar.gz
+#Verify the files hash generated from below command with the one is download page
+#shasum generates hash for the downloaded file
+shasum -a 512 kubernetes.tar.gz #MacOS
+sha512sum kubernetes.tar.gz #Linux
+
+#To decompress a file
+cd /opt/
+tar -xf kubernetes.tar.gz
+#Make some changes
+cd kubernetes
+echo "v1.30.0-modified" > version
+cd ..
+#compress the directory again
+tar -czf kubernetes-modified.tar.gz kubernetes
+shasum -a512 kubernetes-modified.tar.gz
