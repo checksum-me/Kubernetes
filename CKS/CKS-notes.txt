@@ -207,3 +207,26 @@ https://github.com/kodekloudhub/community-faq/blob/main/docs/diagnose-crashed-ap
 #Wait for both pods to restart. This may take a minute or more.
 
 
+###System Hardening 
+
+##Limiting the node access
+#Four types of accounts - User, SuperUser, System and Service accounts
+#id command gives info about the user
+id #currentuser
+id michael #michael info
+#who command to see list of users logged into the system
+who
+#last command lists the last time users were logged into the system
+last 
+##Access control files
+#/etc/password - contains the id, uid, gid details of user
+#/etc/shadow - password is stored here. contents are hashed 
+#/etc/group - stored info of all the user groups
+
+#We can disable user by changing shell to nologin
+usermod -s /bin/nologin michael
+#we can delete the user account itself using below command
+userdel bob 
+#To remove from the group use command below
+deluser michael admin
+
