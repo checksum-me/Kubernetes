@@ -130,3 +130,11 @@ cd ..
 #compress the directory again
 tar -czf kubernetes-modified.tar.gz kubernetes
 shasum -a512 kubernetes-modified.tar.gz
+
+###Below are some references for kubernetes versioning and different releases
+https://github.com/kubernetes/kubernetes/releases
+https://github.com/kubernetes/design-proposals-archive/blob/main/release/versioning.md
+https://github.com/kubernetes/design-proposals-archive/blob/main/api-machinery/api-group.md
+https://blog.risingstack.com/the-history-of-kubernetes/
+https://kubernetes.io/docs/setup/version-skew-policy
+
