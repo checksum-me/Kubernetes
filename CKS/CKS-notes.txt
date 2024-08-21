@@ -227,6 +227,13 @@ last
 usermod -s /bin/nologin michael
 #we can delete the user account itself using below command
 userdel bob 
+#To create user use below command
+useradd -d /opt/sam -s /bin/bash -G admin -u 2328 sam
+#to delete group
+groupdel <groupname>
 #To remove from the group use command below
 deluser michael admin
+#To change password for user below command is used
+passwd <username> #prompt will ask for new password
 
+##SSH Hardening
