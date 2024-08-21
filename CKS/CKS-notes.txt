@@ -138,3 +138,8 @@ https://github.com/kubernetes/design-proposals-archive/blob/main/api-machinery/a
 https://blog.risingstack.com/the-history-of-kubernetes/
 https://kubernetes.io/docs/setup/version-skew-policy
 
+###Kubernetes upgrade in controlplane and worker nodeport
+
+###Network policies
+
+###Ingress and how to setup the same 
