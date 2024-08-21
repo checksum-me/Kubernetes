@@ -1,3 +1,5 @@
+Entire course is available here -> https://github.com/kodekloudhub/certified-kubernetes-security-specialist-cks-course/tree/main/docs
+
 ###Kubelet Security
 #Kubelet will run as a service or if setup via Kubeadm then the config file will have the config details
 #Kubelet Service location -> /usr/local/bin/kubelet in /etc/systemd/system/kube-apiserver.service
@@ -143,3 +145,65 @@ https://kubernetes.io/docs/setup/version-skew-policy
 ###Network policies
 
 ###Ingress and how to setup the same 
+
+###Configuring docker service
+
+systemctl start docker 
+systemctl status docker 
+systemctl stop docker 
+#configuring the service loads it up automatically when the system loads up
+#Also can be loaded manually in foreground using dockerd
+dockerd --debug
+#This is for troubleshooting docker. --debug adds more details
+
+#when docker starts it listens to internal unix socket at /var/run/docker.sock
+#Unix socket is for IPC - Inter Process Communication 
+# Used for communication between different processes on the same host
+#docker.sock is only accessible from docker CLI on the same host
+#standard port for docker is 2375
+
+dockerd --debug --host=tcp://192.168.1.10:2375
+#the host will make docker available on the mentioned IP
+#need to be extremely careful while doing this as this exposes docker outside of host. mght allow anyone on the internet to run containers on this host
+#docker default setting is its not encrypted and no authentication is required
+
+#In the another host export a DOCKER_HOST and then you can access docker as below
+export DOCKER_HOST="tcp://192.168.1.10:2375"
+docker ps
+#default is unencrypted traffic
+
+#To enable encryption set tls to true and add certificates
+dockerd --debug \
+        --host=tcp://192.168.1.10:2376 #Note 2376 is the secure https port compared to 2375 unencrypted port
+        --tls=true \
+        --tlscert=/var/docker/server.pem \
+        --tlskey=/var/docker/serverkey.pem
+
+#move config to a json file at /etc/docker/daemon.json
+{
+  "debug": true,
+  "hosts": ["tcp://192.168.1.10:2376]
+  "tls": true,                              #Only enables encryption does not enforce TLS authentication
+  "tlscert": "/var/docker/server.pem",
+  "tlskey": "/var/docker/serverkey.pem"
+  "tlsverify": true,                        #This is configured to enforce TLS authentication
+  "tlscacert": "/var/docker/caserver.pem"   #This is configured to enforce TLS authentication
+}
+
+#once config file is provided no need to pass options in the command dockerd
+#These options are passed through in the docker via background also via systemctl
+#In the client machine place the certs in ./docker users home directory or pass in the CLI
+
+###Debugging a crashed API server
+https://github.com/kodekloudhub/community-faq/blob/main/docs/diagnose-crashed-apiserver.md
+
+###Securing controlplane and etcd 
+#Restrict communication between etcd and api server to the cipher TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 and also restrict the api server minimum TLS version to TLS 1.2
+#Edit the API server manifest and add the following two arguments
+--tls-min-version=VersionTLS12
+--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+#Edit the etcd manifest and add the following argument
+--cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+#Wait for both pods to restart. This may take a minute or more.
+
+
