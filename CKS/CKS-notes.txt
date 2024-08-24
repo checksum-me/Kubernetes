@@ -293,4 +293,14 @@ jim ALL=(ALL:ALL) ALL
 #To below
 jim ALL=(ALL) NOPASSWD:ALL
 
-###Remove Obsolete packages
+###Remove Obsolete packages and Unwanted services
+#List all services
+systemctl list-units --type service 
+
+#to stop unwanted service
+systemctl stop apache2
+systemctl disable apache2
+
+#to remove the package then use below command
+apt remove apache2
+
