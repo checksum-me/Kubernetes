@@ -304,3 +304,34 @@ systemctl disable apache2
 #to remove the package then use below command
 apt remove apache2
 
+### Restrict Kernel Modules
+
+#to load module for pc speaker use below command
+modprobe pcspkr 
+
+#To list all modules loaded into the Kernel
+lsmod 
+
+#To balcklist module add it in the /etc/modprobe.d/*.conf 
+cat /etc/modprobe.d/blacklist.conf
+
+#Reboot the node to pick up changes
+shutdown -r now 
+
+#load modules and check it should not be there 
+lsmod | grep sctp 
+
+##Disable open ports
+#List all open ports
+netstat -an | grep -w LISTEN 
+
+#To check an unknown port in Ubuntu check the services file
+cat /etc/services | grep -w 53 
+
+https://kubernetes.io/docs/reference/networking/ports-and-protocols/
+
+#List all installed packages in Ubuntu
+apt list --installed
+
+#Identify the service listening on port 9090
+netstat -natp  | grep 9090
