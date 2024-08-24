@@ -237,3 +237,33 @@ deluser michael admin
 passwd <username> #prompt will ask for new password
 
 ##SSH Hardening
+ssh <hostname or IP adddress>
+ssh <user>@<hostname or IP adddress>
+ssh -l <user> <hostname or IP adddress>
+#Port 22 should be open for SSH
+
+#Generate the private and public key pair
+#public key is installed on the remove server. Client connects using private key
+#passphrase is optional
+ssh-keygen -t rsa 
+#public key is stored in usres home directory : /home/mark/.ssh/id_rsa.pub 
+#Private key : /home/mark/.ssh/id_rsa 
+
+#Next copy the public key to remove server. Password based auth is used once
+ssh-copy-id mark@node01
+
+#Public keys should installed in /home/mark/.ssh/authorized_keys
+
+##SSH Hardening
+#Disable ssh for root accounts 
+vi /etc/ssh/sshd_config
+#PermitRootLogin no - this will disable root login 
+#PasswordAuthentication no - this will disable password login and allow only ssh via private key
+#Once changes are done restart sshd service as below
+systemctl restart sshd 
+
+#CIS benchmark lists
+https://www.cisecurity.org/cis-benchmarks
+
+
+
