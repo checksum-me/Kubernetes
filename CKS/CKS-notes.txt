@@ -265,5 +265,32 @@ systemctl restart sshd
 #CIS benchmark lists
 https://www.cisecurity.org/cis-benchmarks
 
+###Sudoers - Privilege Escalation
+/etc/Sudoers
+#Users listed above only can perform sudo actions
+#Commands executed uring sudo are executed in the users own shell and not root shell
 
+#To eliminate root user login do the below and set root to nologin
+vi /etc/passwd
+#root:x:0:0:/root:/usr/sbin/nologin
 
+#Add user and setup ssh login
+#ssh into node01 host from controlplane host
+ssh node01
+
+#Create user jim on node01 host
+adduser jim (set any password you like)
+
+#Return back to controlplane host and copy ssh public key
+ssh-copy-id -i ~/.ssh/id_rsa.pub jim@node01
+
+#Test ssh access from controlplane host
+ssh jim@node01
+
+#To enable passwordless sudo for a user, below is the command
+#change below
+jim ALL=(ALL:ALL) ALL
+#To below
+jim ALL=(ALL) NOPASSWD:ALL
+
+###Remove Obsolete packages
