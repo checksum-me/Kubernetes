@@ -335,3 +335,11 @@ apt list --installed
 
 #Identify the service listening on port 9090
 netstat -natp  | grep 9090
+
+###UFW - Uncomplicated FireWall
+
+#Install and start UFW
+apt-get update
+apt-get install ufw 
+systemctl enable ufw 
+systemctl start ufw
