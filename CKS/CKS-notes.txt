@@ -461,3 +461,56 @@ securityContext:
 #List of syscalls is stored in the below file 
 grep -w 35 /usr/include/asm/unistd_64.h 
 
+###App Armour 
+
+##Linux security feature which confines programs to limited set of resources 
+
+#check is apparmor is installed and running 
+systemctl status apparmor 
+
+#Check if the apparmor is enabled in kernel 
+cat /sys/module/apparmor/parameters/enabled 
+
+#Value of "Y" implies the app armour kernel module is loaded 
+
+#Just like seccomp apparmor is applied to application via profile 
+#profiles can be verified in the kernel 
+cat /sys/kernel/security/apparmor/profiles 
+
+#Check what apparmor profiles are loaded 
+aa-status 
+
+#Profiles can be loaded in 3 different modes - enforce, complain and unconfined 
+
+apt-get install -y apparmor-utils 
+
+#To start profiling an application or process run aa-genprof command
+#The below command is profiling the script add_data.sh 
+aa-genprof /root/add_data.sh 
+
+#Once rpofiling is completed, new profiles along with existing one are stored in below location
+cat /etc/apparmor.d/root.add_data.sh 
+
+#To load a profile use below command, if nothing is retured then profile is successfully loaded 
+apparmor_parser /etc/apparmor.d/root.add_data.sh 
+
+#To disable use -R flag and create symlink 
+apparmor_parser -R /etc/apparmor.d/root.add_data.sh 
+
+ln -s /etc/apparmor.d/root.add_data.sh /etc/apparmor.d/disable/
+
+#To use apparmor in pod add as an annotation to the pod metadata 
+
+#To see which linux capabilities a command needs use the below command
+getcap /usr/bin/ping 
+#output -> /usr/bin/ping = cap_net_raw+ep 
+
+#To get capabilities of a process use the below command
+ps -ef | grep /usr/sbin/sshd | grep -v grep 
+#root 779 (process number)
+getpcaps 779 
+
+#Docker gives only 14 capabilities to the containers 
+
+#To load an apparmor profile 
+apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx 
