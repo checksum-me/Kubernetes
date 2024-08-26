@@ -379,3 +379,38 @@ ufw reset
 ufw allow 22
 ufw deny 80
 
+###Linux Syscalls
+
+#Tracing syscalls 
+#strace is available in most linux distro and helps traces syscalls made by programs
+which strace -> /usr/bin/strace 
+
+#To inspect the command add strace in front of it. Lot of details will be displayed
+strace touch /tmp/error.log 
+
+#first check the pid of the process
+pidof etcd -> 3596 (pid of the etcd)
+
+#now attach strace to this pid, all future syscalls will be reported here 
+strace -p 3596 
+
+# flag -c will give more details in table format
+strace -c touch /tmp/error.log 
+
+#Tracee (opensource) tool by Aquasec uses ebpf to trace syscalls
+#Can be install also or run as docker container
+#if docker below bind mounts are required
+# /tmp/tracee - Default workspace
+# /lib/modules - Kernel Headers
+# /usr/src - Kernel Headers
+
+#The below traces the command ls and the syscalls made by it 
+docker run --name tracee --rm --privileged --pid=host \
+  -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro \
+  -v /tmp/tracee:/tmp/tracee aquasec/tracee:0.4.0 --trace comm=ls 
+
+#Trace syscalls for all new processes 
+# --trace container=new for all new containers syscalls 
+sudo docker run --name tracee --rm --privileged --pid=host \
+  -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro \
+  -v /tmp/tracee:/tmp/tracee aquasec/tracee:0.4.0 --trace pid=new 
