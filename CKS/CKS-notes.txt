@@ -343,3 +343,30 @@ apt-get update
 apt-get install ufw 
 systemctl enable ufw 
 systemctl start ufw
+
+#status
+ufw status
+
+ufw default allow outgoing
+ufw default deny incoming
+
+#next add allow rules
+ufw allow from 172.16.238.5 to any port 22 proto tcp
+ufw allow from 172.16.238.5 to any port 80 proto tcp
+
+ufw allow from 172.16.100.0/28 to any port 80 proto tcp
+
+ufw deny 8080
+
+#Activate the FireWall
+ufw enable 
+
+#Status of the FireWall
+ufw status
+
+#Delete rules
+ufw delete deny 8080 
+#or provide the line number from status
+ufw delete 5 
+
+
