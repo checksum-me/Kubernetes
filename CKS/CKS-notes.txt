@@ -414,3 +414,50 @@ docker run --name tracee --rm --privileged --pid=host \
 sudo docker run --name tracee --rm --privileged --pid=host \
   -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro \
   -v /tmp/tracee:/tmp/tracee aquasec/tracee:0.4.0 --trace pid=new 
+
+#Around 435 Syscalls in linux 
+#Seccomp is part of linux kernel introduced in 2005 
+
+#Check if seccomp is supported by kernel by below command
+grep -i seccomp /boot/config-$(uname -r)
+#If output contains CONFIG_SECCOMP=y then it has Seccomp enabled
+
+#Seccomp has 3 modes 
+#Mode 0 - Disabled 
+#Mode 1 - Strict - Read, write on syscalls
+#Mode 2 - Filtered (selectively)
+
+#To know which profile seccomp is running use below 
+grep Seccomp /proc/1/1status 
+#Output will be like -> Seccomp: 2
+
+#Docker has built in seccomp filter 
+#There is a json file and has whitelisted syscalls and rest all are blocked. This is highly restrictive and secure 
+#There is blacklist json as well. Listed syscalls are blacklisted and aloows the rest - more susceptible to attacks
+
+#Default seccomp of the docker blocks around 60 of 300+ syscalls in the x86 architecture
+
+#To use custom profile in docker use the below
+docker run -it --rm --security-opt seccomp=/root/custom.json docker/whalesay /bin/sh 
+
+#Dont use --security-opt seccomp=unconfined as it will block all syscalls 
+
+##Kubernetes does not implement seccomp by default 
+
+#Security context section of the pod can be used to add the seccomp profile 
+#/var/lib/kubelet/seccomp - default seccomp profile for kubernetes 
+#Localhost profile should be loaded relative to this -> /var/lib/kubelet/seccomp/profiles/violation.json 
+#File can contain default action like below 
+{
+  "defaultAction": "SCMP_ACT_ERRNO"
+}
+
+#Provide the above file as below in the pod security context
+securityContext: 
+  seccompProfile:
+    type: Localhost 
+    localhostProfile: profiles/violation.json 
+
+#List of syscalls is stored in the below file 
+grep -w 35 /usr/include/asm/unistd_64.h 
+
