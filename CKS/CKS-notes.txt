@@ -514,3 +514,21 @@ getpcaps 779
 
 #To load an apparmor profile 
 apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx 
+
+##Open Policy Agent (OPA)
+#Works as authorization and as part of Admission controller
+#Language used to write OPA policy is Rego
+
+#OPA gatekeeper in kubernetes - Installation steps
+https://open-policy-agent.github.io/gatekeeper/website/docs/install/
+
+#With OPA Gatekeeper, you can best practices and organizational conventions for your resources in your kubernetes cluster.
+#For example, you can enforce policies like:
+#All namespaces must have a label that lists a point-of-contact
+#All images must be from approved repositories
+#All pods must have resource limits
+
+#How to create constraint templates - https://open-policy-agent.github.io/gatekeeper/website/docs/howto/#constraint-templates
+
+#Gatekeeper library has list of Constraints that can be created -> https://open-policy-agent.github.io/gatekeeper-library/website/
+
