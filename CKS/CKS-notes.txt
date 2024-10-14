@@ -584,3 +584,23 @@ https://kubernetes.io/docs/concepts/configuration/secret/
 #Once the Pod that depends on the secret is deleted, kubelet will delete its local copy of the secret data as well.
 
 #Having said that, there are other better ways of handling sensitive data like passwords in Kubernetes, such as using tools like Helm Secrets, HashiCorp Vault.
+
+
+##Base vs Parent images
+#When image is built FROM SCRATCH it is called Base image
+#Build modular images, separate for webserver, separate for DB, etc 
+#Container are ephemeral in nature. Store data in external volume. Persist data
+#Official image or verified publisher are original images. Use up to date images
+#Keep size of image small as possible 
+#Remove unnecessary packages from images 
+#Distroless docker images only contain application and runtime dependencies 
+#Does not contain - package managers, shells, network tools, text editors, and other unwanted programs 
+
+# image: docker.io/library/nginx - library is the default account on which system images are published in docker 
+# image: <registry>/<useraccount>/<image-repo>
+# image: <yourname>/<yourcompanyname>/nginx 
+
+##create a secret of type docker-registry for kubernetes to access private registry for images 
+##update imagepullsecrets section to use this docker-registry secret 
+##kubelet uses these credentials to pull images from private repo 
+
