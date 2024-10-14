@@ -532,3 +532,55 @@ https://open-policy-agent.github.io/gatekeeper/website/docs/install/
 
 #Gatekeeper library has list of Constraints that can be created -> https://open-policy-agent.github.io/gatekeeper-library/website/
 
+##Below are some references:
+#How Netflix Is Solving Authorization Across Their Cloud [I] – Manish Mehta & Torin Sandall, Netflix
+https://www.youtube.com/watch?v=R6tUNpRpdnY
+#OPA Deep Dive
+https://www.youtube.com/watch?v=4mBJSIhs2xQ
+#Dive deep into the world of Kubernetes security with our comprehensive guide to Secret Store CSI Driver.
+https://www.youtube.com/watch?v=MTnQW9MxnRI
+
+###Container Sandboxing
+##gVisor
+#gVisor has Sentry and Gofer
+#Acts as intermediate between container and Kernel
+#All syscalls happen via gVisor
+# Each container has its own gVisor kernel acting as the middleman between the application and the linux kernel
+#Not all apps might work with gVisor, each application needs to be tested to check compatibility 
+#Disadvantage is the application might become slightly slower as there is a middleman
+
+##Kata Container
+#Has its own Kernel for each container. Acts like a light weight virtual machine
+#Performance might be slightly dipped and each container might need slightly more memory and ram 
+#Needs hardware virtualization support
+#Needs nested virtualization and not supported by most cloud providers
+#GCloud supports nested virtualization. But performance is poor 
+
+#docker run --runtime kata -d nginx 
+#docker run --runtime runc -d nginx
+
+#handler runsc for gVisor and kata for kata
+#Create a RunTimeClass Object to be used in the pod definition spec section
+
+#kubernetes cluster uses containerd as the runtime. Containerd makes use of runc to start containers.
+
+##One way SSL - Only User verifies the Bank website SSL, the bank doesnt verify the Users authenticity. Only the credentials are verified by the bank 
+
+##Mutual TLS - both client and the server both verify themselves 
+
+##Istio and linkerd supports mTLS encryption between pods
+#Let the application talk as usual. But use Istio to encrypt communication 
+#Istio runs as a sidecar and does encryption and decryption 
+
+#Permissive or Opportunistic mode - enables both encrypted and plain transmission 
+#Enforced or Strict mode - Only allows encrypted traffic 
+
+#Protection and risk of using secrets
+https://kubernetes.io/docs/concepts/configuration/secret/
+
+##Also, the way Kubernetes handles secrets. Such as:
+#A secret is only sent to a node if a pod on that node requires it.
+#Kubelet stores the secret into a tmpfs so that the secret is not written to disk storage.
+#Once the Pod that depends on the secret is deleted, kubelet will delete its local copy of the secret data as well.
+
+#Having said that, there are other better ways of handling sensitive data like passwords in Kubernetes, such as using tools like Helm Secrets, HashiCorp Vault.
