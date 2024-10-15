@@ -604,3 +604,28 @@ https://kubernetes.io/docs/concepts/configuration/secret/
 ##update imagepullsecrets section to use this docker-registry secret 
 ##kubelet uses these credentials to pull images from private repo 
 
+##kubesec can be used for static analysis 
+#Installation link -> https://kubesec.io/
+
+wget https://github.com/controlplaneio/kubesec/releases/download/v2.13.0/kubesec_linux_amd64.tar.gz
+tar -xvf  kubesec_linux_amd64.tar.gz
+mv kubesec /usr/bin/
+
+# kubesec can be installed locally and scanned using binary 
+# kubesec scan pod.yaml 
+
+#Or kubesec online service can be used to scan 
+# curl -sSX POST --data-binary @"pod.yaml" https://v2.kubesec.io/scan 
+
+##CVE - Common Vulnerabilities and Exposures 
+#CVE Severity scores - 0 - lowest and 10 - highest (critical)
+#trivy is a common tool used for vulnerability scanning 
+https://github.com/aquasecurity/trivy
+
+#pull an image 
+crictl pull public.ecr.aws/docker/library/python:3.12.4
+
+#Scan and save results to a location 
+trivy image --output /root/python_12.txt public.ecr.aws/docker/library/python:3.12.4
+trivy image --input alpine.tar --output alpine.json --format json 
+
