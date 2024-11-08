@@ -18,3 +18,33 @@ spec:
         except:
         - 192.168.121.156/32
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-external-egress
+  namespace: namespace-worker
+spec:
+  podSelector: {}  # Selects all pods in namespace-worker
+  policyTypes:
+  - Egress
+  egress:
+  # Allow egress to all pods in all namespaces
+  - to:
+    - namespaceSelector: {}  # All namespaces
+      podSelector: {}        # All pods
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-specific-ingress
+  namespace: namespace-ui
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          namespace: namespace-web
+---

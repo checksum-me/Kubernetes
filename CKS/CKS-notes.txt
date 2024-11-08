@@ -719,3 +719,8 @@ https://istio.io/latest/docs/setup/additional-setup/download-istio-release/
 
 #To label the default namespace for Istio's automatic sidecar injection, run:
   kubectl label namespace default istio-injection=enabled
+
+#To check if the pod is accessible from another pod use wget 
+wget -qO- http://<podip>
+wget -qO- <podip>
+
