@@ -724,3 +724,15 @@ https://istio.io/latest/docs/setup/additional-setup/download-istio-release/
 wget -qO- http://<podip>
 wget -qO- <podip>
 
+##Priority 
+#API Priority - Fair processing of API requests 
+#PriorityLevelConfiguration helps set prioirty to any API resources
+#FlowControl created targets the resource from the PriorityLevelConfiguration
+#Suppose NamespaceA needs to be prioritized over NamespaceB, then PriorityLevelConfiguration needs to be set to high (10) for NamespaceA
+
+#Pod Priority - Ensures Critical Pods are scheduled and run 
+#For Pods, create PriorityClass resources separately 
+#Associate PriorityClass to the Pod via PriorityClassName 
+
+
+
