@@ -657,3 +657,51 @@ echo $TOKEN > /root/token.txt
 #Access the API directly using curl:
 curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
 
+
+#Find and terminate the kubectl proxy process:
+pkill -f "kubectl proxy"
+
+#Alternatively, you can manually find the process ID and kill it:
+ps aux | grep 'kubectl proxy' | grep "8090"
+kill <process_id>
+
+##Lab Bootstrap token use 
+#Generate the Join Command Using the Bootstrap Token
+kubeadm token create [random-token-id].[random-secret] --dry-run --print-join-command --ttl 2h
+#This command will output the kubeadm join command with the necessary token and CA certificate hash
+
+##Configuring API server to use ABAC (Attribute Based Access Control ) mode 
+# /etc/kubernetes/manifests/kube-apiserver.yaml
+
+- --authorization-mode=Node,RBAC,ABAC
+- --authorization-policy-file=/etc/kubernetes/abac/abac-policy.jsonl
+
+https://kubernetes.io/docs/reference/access-authn-authz/abac/
+https://jsonlines.org/examples/
+https://raw.githubusercontent.com/kubernetes/kubernetes/refs/tags/v1.31.0/pkg/auth/authorizer/abac/example_policy_file.jsonl
+
+##Setting Up kubectl Credentials for the Service Account
+#Create Secret and service accounts 
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: john-secret
+      namespace: default
+      annotations:
+        kubernetes.io/service-account.name: john
+    type: kubernetes.io/service-account-token
+    ---
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: john
+      namespace: default
+    secrets:
+      - name: john-secret
+
+#Step 1: Set up new credentials:
+#Get token from the newly created secret above
+kubectl config set-credentials john --token=$SA_TOKEN
+#Step 2: Set up the new context:
+kubectl config set-context john-context --cluster=kubernetes --namespace=default --user=john
+kubectl config use-context john-context
