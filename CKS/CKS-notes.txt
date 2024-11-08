@@ -706,3 +706,16 @@ kubectl config set-credentials john --token=$SA_TOKEN
 kubectl config set-context john-context --cluster=kubernetes --namespace=default --user=john
 kubectl config use-context john-context
 
+##Istio 
+#Releases page 
+https://istio.io/latest/docs/setup/additional-setup/download-istio-release/
+
+  ISTIO_VERSION=1.23.1 # e.g. 1.16.0
+  curl -L https://istio.io/downloadIstio | ISTIO_VERSION=$ISTIO_VERSION sh -
+  cd istio-$ISTIO_VERSION
+  mv bin/istioctl /usr/local/bin/
+#Install Istio base components 
+  istioctl install --set profile=default -y
+
+#To label the default namespace for Istio's automatic sidecar injection, run:
+  kubectl label namespace default istio-injection=enabled
