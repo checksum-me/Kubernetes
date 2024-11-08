@@ -629,3 +629,31 @@ crictl pull public.ecr.aws/docker/library/python:3.12.4
 trivy image --output /root/python_12.txt public.ecr.aws/docker/library/python:3.12.4
 trivy image --input alpine.tar --output alpine.json --format json 
 
+##Lab - API Server 
+kubectl config view -o yaml
+
+#Automatically set the cluster name:
+export CLUSTER_NAME=$(kubectl config view -o jsonpath='{.clusters[0].name}')
+echo $CLUSTER_NAME
+#Retrieve the API server address:
+APISERVER=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"$CLUSTER_NAME\")].cluster.server}")
+echo $APISERVER
+# Alternative
+kubectl config view -o yaml | grep server
+
+#Get the authentication token:
+# Get the default token secret name
+SECRET_NAME=$(kubectl get secrets -n kube-system | grep 'bootstrap-token-*' | awk '{print $1}')
+
+# Get the token ID and secret
+TOKEN_ID=$(kubectl get secret -n kube-system $SECRET_NAME -o jsonpath='{.data.token-id}' | base64 --decode)
+TOKEN_SECRET=$(kubectl get secret -n kube-system $SECRET_NAME -o jsonpath='{.data.token-secret}' | base64 --decode)
+
+# Generate the token: <token-id>.<token-secret>
+TOKEN="$TOKEN_ID.$TOKEN_SECRET"
+echo $TOKEN
+# Store the token in a file
+echo $TOKEN > /root/token.txt
+#Access the API directly using curl:
+curl -X GET $APISERVER/api --header "Authorization: Bearer $TOKEN" --insecure
+
