@@ -837,3 +837,38 @@ tar -xvf kube-linter-linux.tar.gz
 #Move the binary to the /usr/local/bin/ path:
 mv kube-linter /usr/local/bin/
 
+###Monitoring and Logging 
+##Falco 
+#Perform behavorial analytics of syscall process 
+#Falco should be installed at a Kernel level, but some could providers might find it intrusive and wont allow
+#In that case Falco can be run as a DaemonSet on the nodes 
+
+#Some filters in Falco that can be used in condition and output 
+# container.id , proc.name , fd.name , evt.type , user.name , container.image.repo 
+#More filters at https://falco.org/docs/rules/supported-fields/
+
+#Different Priority supported in Falco 
+# DEBUG, INFORMATIONAL, NOTICE, WARNING, ERROR, CRITICAL, ALERT, EMERGENCY 
+
+#Falco configuration file - /etc/falco/falco.yaml 
+#We can restart Falco or do a hot reload of the falco service. (kill the pid)
+
+journalctl -u falco 
+journalctl -fu falco 
+
+#Update the below rule to /etc/falco/falco_rules.local.yaml:
+#Next, hot-reload the falco configuration by running kill -1 $(cat /var/run/falco.pid)
+
+#SIGHUP stands for Signal Hangup, and it is one of the standard signals in Unix-like operating systems used to communicate with processes.
+#The signal number for SIGHUP is 1.
+#It can be sent to a process using kill -1 <PID> or kill -SIGHUP <PID>.
+#How a process responds to SIGHUP depends on its design. By convention, many daemons interpret SIGHUP as an instruction to reload their configuration.
+
+#Below are some references:
+https://falco.org/docs/getting-started/installation/
+https://github.com/falcosecurity/charts/tree/master/falco
+https://falco.org/docs/rules/supported-fields/
+https://falco.org/docs/rules/default-macros/
+https://falco.org/docs/configuration/
+
+
