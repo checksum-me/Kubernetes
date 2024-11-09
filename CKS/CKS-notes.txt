@@ -872,3 +872,12 @@ https://falco.org/docs/rules/default-macros/
 https://falco.org/docs/configuration/
 
 
+##Troubleshooting 
+#Once you have the container ID from crictl ps, you can find the main process's PID and verify the user (UID) and group (GID) it’s running under. Here are the steps:
+crictl inspect <container_id> | grep pid
+ps -o pid,uid,gid,user,group,comm -p <PID>
+
+#This output verifies that:
+#UID (user ID) is 1000, which matches the runAsUser specified.
+#GID (group ID) is 3000, which matches the runAsGroup specified.
+
