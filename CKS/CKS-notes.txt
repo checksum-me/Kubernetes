@@ -881,3 +881,39 @@ ps -o pid,uid,gid,user,group,comm -p <PID>
 #UID (user ID) is 1000, which matches the runAsUser specified.
 #GID (group ID) is 3000, which matches the runAsGroup specified.
 
+##Kube event can be customized to report only the required changes 
+#The file audit-policy.yaml should be customized for this 
+#Mention the --audit-policy-file=<> in the kube-apiserver yaml file 
+#Levels of auditing - None, Metadata, Request, RequestResponse 
+
+#Two types of audit backend - log file or webhook (falco)
+#Mention the --audit-log-path=<> in the kube-apiserver yaml file to store in the master node 
+
+#If the kube-apiserver is defined as a service, make use of the same flags above in the service file on host 
+# --audit-log-maxage to specify the maximum age (days) we can keep these audit files 
+# --audit-log-maxbackup and --audit-log-maxsize are other parameters
+
+
+#Enable logging in API server 
+ - --audit-policy-file=/etc/kubernetes/prod-audit.yaml
+ - --audit-log-path=/var/log/prod-secrets.log
+ - --audit-log-maxage=30
+#Then, add volumes and volume mounts as shown in the below snippets.
+volumes:
+  - name: audit
+    hostPath:
+      path: /etc/kubernetes/prod-audit.yaml
+      type: File
+  - name: audit-log
+    hostPath:
+      path: /var/log/prod-secrets.log
+      type: FileOrCreate
+volumeMounts:
+  - mountPath: /etc/kubernetes/prod-audit.yaml
+    name: audit
+    readOnly: true
+  - mountPath: /var/log/prod-secrets.log
+    name: audit-log
+    readOnly: false
+
+then save the file and make sure that kube-apiserver restarts.
