@@ -1,0 +1,10 @@
+#How to setup KubeLinter via Github actions
+# name: Lint Kubernetest Manifests 
+# on: [push]
+# jobs:
+#   lint: 
+#     runs-on: ubuntu-latest 
+#     steps: 
+#     - uses: actions/checkout@v2
+#     - name: Run KubeLinter 
+#       run: kube-linter lint .

@@ -822,3 +822,18 @@ curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh 
 #Analyze the /root/webapp-sbom.json SBOM using Grype to generate a vulnerability report and store it in /root/grype-report.json
 grype sbom:/root/webapp-sbom.json -o json > /root/grype-report.json
 
+#For continuous CI/CD and view the syft generated SBOM report, please refer below link 
+https://github.com/checksum-me/supply_chain_security
+#Refer the github actions tab for the run and the report as well 
+
+##KubeLinter 
+#Make static analysis of the YAML files for any improvements and suggestions 
+#Check yaml folder for how to do kubelint via github actions 
+
+#Download the latest version of KubeLinter for Linux using the command below:
+curl -LO https://github.com/stackrox/kube-linter/releases/latest/download/kube-linter-linux.tar.gz
+#Extract the binary from the tar file:
+tar -xvf kube-linter-linux.tar.gz
+#Move the binary to the /usr/local/bin/ path:
+mv kube-linter /usr/local/bin/
+
