@@ -796,3 +796,29 @@ tcpdump -n -i cilium_wg0 -X
 #Via tcpdump, you should see the traffic between the pods.
 #We see requests from curlpod to nginx and responses from nginx to curlpod in tcpdump output.
 
+##Software Bill Of Materials (SBOM)
+#SPDX and CycloneDX
+#SPDX - Standard format for sharing software bill of materials 
+#Complex due to extensive metadata 
+
+#CycloneDX - Lightweight SBOM format designed for security and compliance 
+#Simpler and more focused on essential SBOM elements 
+
+#Generate -> Store -> Scan -> Analyze -> Remediate -> Monitor 
+
+#Syft can be used to generate SBOM 
+#Github can be used to store the SBOM 
+#grype can be used to scan the SBOM 
+
+#Install Syft 
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+#Scanning an image
+syft docker.io/kodekloud/webapp-color:latest -o spdx > /root/webapp-spdx.sbom
+
+#Grype Tool Installation 
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+#Analyze the /root/webapp-sbom.json SBOM using Grype to generate a vulnerability report and store it in /root/grype-report.json
+grype sbom:/root/webapp-sbom.json -o json > /root/grype-report.json
+
